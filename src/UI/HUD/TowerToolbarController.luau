@@ -18,13 +18,37 @@ local data = {
 
 local plr = Players.LocalPlayer
 
+function TowerToolbarController:ChangeSlotColor(slot: Frame, equipped: boolean)
+    local TowerName: TextLabel = slot.TextButton.TowerName
+    if equipped then
+        TowerName.TextColor3 = Color3.fromRGB(0, 255, 0)
+    else
+        TowerName.TextColor3 = Color3.fromRGB(255, 255, 255)
+    end
+end
+
 function TowerToolbarController:KnitStart()
     local TowerToolbarScreenGUI = plr.PlayerGui:WaitForChild("SharedGUI"):WaitForChild("TowerToolbar")
     local Container = TowerToolbarScreenGUI.Frame
 
+    local equippedSlot: Frame?
+
+    local function HandleEquipUnequip(slot: Frame)
+        if equippedSlot == slot then
+            self:ChangeSlotColor(slot, false)
+        else
+            self:ChangeSlotColor(slot, true)
+            if equippedSlot then
+                self:ChangeSlotColor(equippedSlot, false)
+            end
+
+            equippedSlot = slot
+        end
+    end
+
     for i, towerName in ipairs(data) do
-        local frame = Container:FindFirstChild(i)
-        if not frame then
+        local slot = Container:FindFirstChild(i)
+        if not slot then
             warn(`{i} button doesn't exist`)
             continue
         end
@@ -35,12 +59,17 @@ function TowerToolbarController:KnitStart()
             continue
         end
 
-        local btn = frame.TextButton
+        local btn: TextButton = slot.TextButton
         local TowerName = btn.TowerName
         local TowerPrice = btn.TowerPrice
 
         TowerName.Text = towerName
         TowerPrice.Text = "$" .. tostring(towerData.PRICE)
+
+        btn.Activated:Connect(function()
+            print("Activated")
+            HandleEquipUnequip(slot)
+        end)
     end
 end
 

@@ -1,4 +1,4 @@
-local Players = game:GetService("Players")
+--[[local Players = game:GetService("Players")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -34,7 +34,7 @@ local towers = {
 	{ Name = "Null", Price = 0 }
 }
 
---[[for i = 1, 5 do
+for i = 1, 5 do
 	local slotFrame = Instance.new("Frame")
 	slotFrame.Name = tostring(i)
 	slotFrame.Size = UDim2.new(0, 120, 0, 85)
