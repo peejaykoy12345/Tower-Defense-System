@@ -1,3 +1,4 @@
+local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 
@@ -14,6 +15,14 @@ local data = {
     "Fighter",
     "Fighter",
     "Fighter"
+}
+
+local validSlotKeys = {
+    [Enum.KeyCode.One] = "1",
+    [Enum.KeyCode.Two] = "2",
+    [Enum.KeyCode.Three] = "3",
+    [Enum.KeyCode.Four] = "4",
+    [Enum.KeyCode.Five] = "5",
 }
 
 local plr = Players.LocalPlayer
@@ -71,6 +80,20 @@ function TowerToolbarController:KnitStart()
             HandleEquipUnequip(slot)
         end)
     end
+    UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+        if gameProcessedEvent then return end
+
+        local slotNumber = validSlotKeys[input.KeyCode]
+        if not slotNumber then return end
+
+        local slot = Container:FindFirstChild(slotNumber)
+        if not slot then
+            warn(`{slotNumber} button doesn't exist`)
+            return
+        end
+
+        HandleEquipUnequip(slot)
+    end)
 end
 
 return TowerToolbarController
