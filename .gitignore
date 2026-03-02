@@ -1,0 +1,10 @@
+# Project place file
+/tower-defense.rbxlx
+
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
+
+*.lock
+
+sourcemap.json
