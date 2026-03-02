@@ -1,3 +1,4 @@
+local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -14,6 +15,7 @@ local TowerPlacementController = Knit.CreateController {
 local plr = Players.LocalPlayer
 local cam = workspace.CurrentCamera
 
+local uisConnection: RBXScriptSignal?
 local heartbeatConnection: RBXScriptSignal?
 local currentTowerModel: Model?
 
@@ -30,10 +32,14 @@ function TowerPlacementController:PreviewTower(template: Model)
         end)
     end
 
+    self.currentRotation = CFrame.Angles(0, math.rad(0), 0)
+
     ModelUtils:SetPartsCanCollide(TowerModel:GetChildren(), false)
     TowerModel.Parent = workspace
 
     ModelUtils:SetPartsTransparency(TowerModel:GetChildren(), 0.4, {TowerModel.HumanoidRootPart})
+
+    self:ConnectUserInputService()
 
     currentTowerModel = TowerModel
 
@@ -55,17 +61,42 @@ function TowerPlacementController:PreviewTower(template: Model)
 
         local worldPos = result.Position
 
-        TowerModel:PivotTo(CFrame.new(worldPos))
+        TowerModel:PivotTo(CFrame.new(worldPos) * self.currentRotation) -- Players.peejaykoy12345.PlayerScripts.Client.Controllers.TowerPlacementController:62: invalid argument #2 (Vector3 expected, got nil
     end)
+end
+
+function TowerPlacementController:ConnectUserInputService()
+    uisConnection = UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+        if gameProcessedEvent then return end
+
+        if input.KeyCode == Enum.KeyCode.R then
+            self:RotatePreviewTower()
+        end
+    end)
+end
+
+
+function TowerPlacementController:RotatePreviewTower()
+    if not currentTowerModel then return end  
+
+    local rotationIncrement = CFrame.Angles(0, math.rad(45), 0)
+    self.currentRotation *= rotationIncrement
 end
 
 function TowerPlacementController:UnpreviewTower()
     if currentTowerModel then
         currentTowerModel:Destroy()
+        currentTowerModel = nil
     end
 
     if heartbeatConnection then
         heartbeatConnection:Disconnect()
+        heartbeatConnection = nil
+    end
+
+    if uisConnection then
+        uisConnection:Disconnect()
+        uisConnection = nil
     end
 end
 
