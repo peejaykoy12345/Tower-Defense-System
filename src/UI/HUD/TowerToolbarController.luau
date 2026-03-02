@@ -44,14 +44,19 @@ function TowerToolbarController:KnitStart()
 
     local TowerPlacementController = Knit.GetController("TowerPlacementController")
 
+    local function handleUnequip(slot: Frame)
+        self:ChangeSlotColor(slot, false)
+        TowerPlacementController:UnpreviewTower()
+        equippedSlot = nil
+    end
+
     local function HandleEquipUnequip(slot: Frame)
         if equippedSlot == slot then
-            self:ChangeSlotColor(slot, false)
-            TowerPlacementController:UnpreviewTower()
+            handleUnequip(slot)
         else
             self:ChangeSlotColor(slot, true)
             if equippedSlot then
-                self:ChangeSlotColor(equippedSlot, false)
+                handleUnequip(slot)
             end
 
             local towerName = slot.TextButton.TowerName.Text

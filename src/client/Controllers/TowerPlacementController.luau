@@ -19,14 +19,23 @@ local currentTowerModel: Model?
 
 function TowerPlacementController:PreviewTower(template: Model)
     local TowerModel = template:Clone()
+    
+    -- Torso can collide is being set to true by humanoid. 
+    -- So we have to make it false everytime.
+    local torso = TowerModel:FindFirstChild("Torso")
+    if torso then
+        local hum = TowerModel.Humanoid
+        hum.StateChanged:Connect(function(old, new)
+            torso.CanCollide = false
+        end)
+    end
 
-    TowerModel.Humanoid:Destroy()
-
-    ModelUtils:SetPartsCanCollide(TowerModel:GetDescendants(), false)
-
+    ModelUtils:SetPartsCanCollide(TowerModel:GetChildren(), false)
     TowerModel.Parent = workspace
 
     ModelUtils:SetPartsTransparency(TowerModel:GetChildren(), 0.4, {TowerModel.HumanoidRootPart})
+
+    currentTowerModel = TowerModel
 
     heartbeatConnection = RunService.Heartbeat:Connect(function()
         local mouseX, mouseY = plr:GetMouse().X, plr:GetMouse().Y
