@@ -6,6 +6,7 @@ realm = "shared"
 
 [dependencies]
 Knit = "sleitnick/knit@1.7.0"
+RaycastHelper = "egomoose/raycast-helper@3.0.1"
 
 [server-dependencies]
 ProfileStore = "vyon/profilestore@1.0.3"

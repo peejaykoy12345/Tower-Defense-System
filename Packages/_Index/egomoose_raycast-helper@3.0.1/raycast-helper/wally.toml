@@ -1,0 +1,11 @@
+[package]
+name = "egomoose/raycast-helper"
+description = "https://github.com/EgoMoose/raycast-helper"
+version = "3.0.1"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+exclude = ["**"]
+include = ["src", "src/**", "wally.toml", "wally.lock", "default.project.json", "LICENSE"]
+
+[dependencies]

@@ -42,15 +42,27 @@ function TowerToolbarController:KnitStart()
 
     local equippedSlot: Frame?
 
+    local TowerPlacementController = Knit.GetController("TowerPlacementController")
+
     local function HandleEquipUnequip(slot: Frame)
         if equippedSlot == slot then
             self:ChangeSlotColor(slot, false)
+            TowerPlacementController:UnpreviewTower()
         else
             self:ChangeSlotColor(slot, true)
             if equippedSlot then
                 self:ChangeSlotColor(equippedSlot, false)
             end
 
+            local towerName = slot.TextButton.TowerName.Text
+
+            local towerData = TowerData[towerName]
+            if not towerData then 
+                warn(`{towerName} is not in TowerData`)
+                return
+            end
+
+            TowerPlacementController:PreviewTower(towerData[1].Model)
             equippedSlot = slot
         end
     end
