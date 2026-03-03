@@ -37,7 +37,7 @@ function TowerPlacementController:PreviewTower(template: Model)
     local torso = TowerModel:FindFirstChild("Torso")
     if torso then
         local hum = TowerModel.Humanoid
-        hum.StateChanged:Connect(function(old, new)
+        hum.StateChanged:Connect(function()
             torso.CanCollide = false
         end)
     end
@@ -71,8 +71,22 @@ function TowerPlacementController:PreviewTower(template: Model)
 
         local worldPos = result.Position
 
-        TowerModel:PivotTo(CFrame.new(worldPos) * self.currentRotation) -- Players.peejaykoy12345.PlayerScripts.Client.Controllers.TowerPlacementController:62: invalid argument #2 (Vector3 expected, got nil
+        TowerModel:PivotTo(CFrame.new(worldPos) * self.currentRotation)
+
+        local towerName, cf = self:GetTowerNameAndCFrame()
+        if not TowerUtils:CanPlaceTower(towerName, cf) then 
+            ModelUtils:SetPartsColor(currentTowerModel:GetChildren(), Color3.fromRGB(150, 0, 0))
+        else
+            ModelUtils:SetPartsColor(currentTowerModel:GetChildren(), Color3.fromRGB(0, 150, 0))
+        end
     end)
+end
+
+function TowerPlacementController:GetTowerNameAndCFrame()
+    local towerName = currentTowerModel.Name
+    local cf = currentTowerModel:GetPivot()
+
+    return towerName, cf
 end
 
 function TowerPlacementController:ConnectUserInputService()
@@ -84,8 +98,7 @@ function TowerPlacementController:ConnectUserInputService()
         end
 
         if input.UserInputType == Enum.UserInputType.MouseButton1 and currentTowerModel then
-            local towerName = currentTowerModel.Name
-            local cf = currentTowerModel:GetPivot()
+            local towerName, cf = self:GetTowerNameAndCFrame()
             if not TowerUtils:CanPlaceTower(towerName, cf) then return end
 
             self.TowerPlacementService:RequestPlaceTower(towerName, cf, {currentTowerModel})

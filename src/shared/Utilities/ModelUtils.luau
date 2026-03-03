@@ -17,4 +17,8 @@ function ModelUtils:SetPartsCanCollide(parts: {Instance}, CanCollide: boolean, i
     self:SetPartsProperties(parts, "CanCollide", CanCollide, ignoreList)
 end
 
+function ModelUtils:SetPartsColor(parts: {Instance}, color: Color3, ignoreList: {Instance}?)
+    self:SetPartsProperties(parts, "Color", color, ignoreList)
+end
+
 return ModelUtils
