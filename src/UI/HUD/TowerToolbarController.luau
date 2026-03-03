@@ -44,9 +44,11 @@ function TowerToolbarController:KnitStart()
 
     local TowerPlacementController = Knit.GetController("TowerPlacementController")
 
-    local function handleUnequip(slot: Frame)
+    local function handleUnequip(slot: Frame, skipUnpreview: boolean)
         self:ChangeSlotColor(slot, false)
-        TowerPlacementController:UnpreviewTower()
+        if not skipUnpreview then
+            TowerPlacementController:UnpreviewTower()
+        end
         equippedSlot = nil
     end
 
@@ -67,7 +69,12 @@ function TowerToolbarController:KnitStart()
                 return
             end
 
-            TowerPlacementController:PreviewTower(towerData[1].Model)
+            local onUnpreviewTower = TowerPlacementController:PreviewTower(towerData[1].Model)
+
+            onUnpreviewTower:Connect(function()
+                handleUnequip(slot, true)
+            end)
+
             equippedSlot = slot
         end
     end

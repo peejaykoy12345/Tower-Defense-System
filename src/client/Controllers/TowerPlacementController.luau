@@ -4,9 +4,13 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
+local GoodSignal = require(ReplicatedStorage.Packages.GoodSignal)
 local RaycastHelper = require(ReplicatedStorage.Packages.RaycastHelper)
 
-local ModelUtils = require(ReplicatedStorage.Shared.Utilities.ModelUtils)
+local UtilitiesFolder = ReplicatedStorage.Shared.Utilities
+local ModelUtils = require(UtilitiesFolder.ModelUtils)
+local TowerUtils = require(UtilitiesFolder.TowerUtils)
+
 
 local TowerPlacementController = Knit.CreateController {
     Name = "TowerPlacementController"
@@ -18,6 +22,10 @@ local cam = workspace.CurrentCamera
 local uisConnection: RBXScriptSignal?
 local heartbeatConnection: RBXScriptSignal?
 local currentTowerModel: Model?
+
+function TowerPlacementController:KnitStart()
+    self.TowerPlacementService = Knit.GetService("TowerPlacementService")
+end
 
 function TowerPlacementController:PreviewTower(template: Model)
     local TowerModel = template:Clone()
@@ -63,6 +71,10 @@ function TowerPlacementController:PreviewTower(template: Model)
 
         TowerModel:PivotTo(CFrame.new(worldPos) * self.currentRotation) -- Players.peejaykoy12345.PlayerScripts.Client.Controllers.TowerPlacementController:62: invalid argument #2 (Vector3 expected, got nil
     end)
+
+    self.OnUnpreviewTower = GoodSignal.new()
+
+    return self.OnUnpreviewTower
 end
 
 function TowerPlacementController:ConnectUserInputService()
@@ -71,6 +83,15 @@ function TowerPlacementController:ConnectUserInputService()
 
         if input.KeyCode == Enum.KeyCode.R then
             self:RotatePreviewTower()
+        end
+
+        if input.UserInputType == Enum.UserInputType.MouseButton1 and currentTowerModel then
+            local towerName = currentTowerModel.Name
+            local cf = currentTowerModel:GetPivot()
+            if not TowerUtils:CanPlaceTower(towerName, cf) then return end
+
+            self.TowerPlacementService:RequestPlaceTower(towerName, cf)
+            self:UnpreviewTower()
         end
     end)
 end
@@ -97,6 +118,11 @@ function TowerPlacementController:UnpreviewTower()
     if uisConnection then
         uisConnection:Disconnect()
         uisConnection = nil
+    end
+
+    if self.OnUnpreviewTower then
+        self.OnUnpreviewTower:Fire()
+        self.OnUnpreviewTower = nil
     end
 end
 

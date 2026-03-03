@@ -2,7 +2,6 @@ local ModelUtils = {}
 
 function ModelUtils:SetPartsProperties(parts: {Instance}, propertyName: string, value: number | boolean, ignoreList: {Instance}?)
     for _, part in ipairs(parts) do
-        print(`{part.Name} if not {part:IsA("BasePart")} then continue end `)
         if not part:IsA("BasePart") then continue end
         if ignoreList and table.find(ignoreList, part) then continue end
 
