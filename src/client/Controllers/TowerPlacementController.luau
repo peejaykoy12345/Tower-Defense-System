@@ -88,7 +88,7 @@ function TowerPlacementController:ConnectUserInputService()
             local cf = currentTowerModel:GetPivot()
             if not TowerUtils:CanPlaceTower(towerName, cf) then return end
 
-            self.TowerPlacementService:RequestPlaceTower(towerName, cf)
+            self.TowerPlacementService:RequestPlaceTower(towerName, cf, {currentTowerModel})
             self:UnpreviewTower()
         end
     end)
