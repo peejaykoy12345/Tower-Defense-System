@@ -25,8 +25,6 @@ local currentTowerModel: Model?
 
 function TowerPlacementController:KnitStart()
     self.TowerPlacementService = Knit.GetService("TowerPlacementService")
-
-    self.OnUnpreviewTower = GoodSignal.new()
 end
 
 function TowerPlacementController:PreviewTower(template: Model)
@@ -102,7 +100,6 @@ function TowerPlacementController:ConnectUserInputService()
             if not TowerUtils:CanPlaceTower(towerName, cf) then return end
 
             self.TowerPlacementService:RequestPlaceTower(towerName, cf, {currentTowerModel})
-            self:UnpreviewTower()
         end
     end)
 end
@@ -130,8 +127,6 @@ function TowerPlacementController:UnpreviewTower()
         uisConnection:Disconnect()
         uisConnection = nil
     end
-
-    self.OnUnpreviewTower:Fire()
 end
 
 return TowerPlacementController

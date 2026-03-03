@@ -24,7 +24,7 @@ function TowerPlacementService:PlaceTower(towerName: string, cf: CFrame)
 
     local towerModel = towerData[1].Model:Clone()
     towerModel:PivotTo(cf)
-    towerModel.Parent = workspace
+    towerModel.Parent = workspace.Towers
 end
 
 return TowerPlacementService
