@@ -25,6 +25,8 @@ local currentTowerModel: Model?
 
 function TowerPlacementController:KnitStart()
     self.TowerPlacementService = Knit.GetService("TowerPlacementService")
+
+    self.OnUnpreviewTower = GoodSignal.new()
 end
 
 function TowerPlacementController:PreviewTower(template: Model)
@@ -71,10 +73,6 @@ function TowerPlacementController:PreviewTower(template: Model)
 
         TowerModel:PivotTo(CFrame.new(worldPos) * self.currentRotation) -- Players.peejaykoy12345.PlayerScripts.Client.Controllers.TowerPlacementController:62: invalid argument #2 (Vector3 expected, got nil
     end)
-
-    self.OnUnpreviewTower = GoodSignal.new()
-
-    return self.OnUnpreviewTower
 end
 
 function TowerPlacementController:ConnectUserInputService()
@@ -120,10 +118,7 @@ function TowerPlacementController:UnpreviewTower()
         uisConnection = nil
     end
 
-    if self.OnUnpreviewTower then
-        self.OnUnpreviewTower:Fire()
-        self.OnUnpreviewTower = nil
-    end
+    self.OnUnpreviewTower:Fire()
 end
 
 return TowerPlacementController

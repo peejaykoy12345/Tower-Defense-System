@@ -52,6 +52,12 @@ function TowerToolbarController:KnitStart()
         equippedSlot = nil
     end
 
+    TowerPlacementController.OnUnpreviewTower:Connect(function()
+        if equippedSlot then
+            handleUnequip(equippedSlot, true)
+        end
+    end)
+
     local function HandleEquipUnequip(slot: Frame)
         if equippedSlot == slot then
             handleUnequip(slot)
@@ -69,11 +75,7 @@ function TowerToolbarController:KnitStart()
                 return
             end
 
-            local onUnpreviewTower = TowerPlacementController:PreviewTower(towerData[1].Model)
-
-            onUnpreviewTower:Connect(function()
-                handleUnequip(slot, true)
-            end)
+            TowerPlacementController:PreviewTower(towerData[1].Model)
 
             equippedSlot = slot
         end
