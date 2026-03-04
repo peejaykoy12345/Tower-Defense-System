@@ -1,17 +1,13 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local ServerScriptService = game:GetService("ServerScriptService")
 -- Script is for testing stuff only.
 
 local DefaultClass = require(ServerScriptService.Server.Classes.Enemies.Default)
 
-local enemy = DefaultClass.new({Name = "Rig", Template = workspace.Fighter})
-local baked = enemy.precomputeWaypoints(workspace.EnemyWaypoints:GetChildren())
-enemy:SetPath(baked)
+local enemy = DefaultClass.new({Name = "Rig", Template = ReplicatedStorage.Fighter})
 task.wait(5)
-RunService.Heartbeat:Connect(function(dt)
-    if enemy.finished then
-        enemy:Destroy()
-    else
-        enemy:Step(dt)
-    end
-end)
+
+local waypoints = workspace.EnemyWaypoints:GetChildren()
+
+enemy:MoveTo(waypoints)
