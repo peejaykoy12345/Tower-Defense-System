@@ -1,4 +1,4 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Base = workspace.Base
 
 local Default = {}
 Default.__index = Default
@@ -15,9 +15,11 @@ function Default.new(enemyParams: enemyParams)
     self.Name = enemyParams.Name
     self.Speed = enemyParams.Speed or 16
     self.Model = enemyParams.Template:Clone()
-    self.Model.Parent = workspace
+    self.Model.Parent = workspace.Enemies
 
-    local hrp = self.Model:WaitForChild("HumanoidRootPart")
+    self.Humanoid = self.Model.Humanoid
+
+    local hrp = self.Model.HumanoidRootPart
 
     self.hrp = hrp
     self.waypointIndex = 1
@@ -26,13 +28,15 @@ function Default.new(enemyParams: enemyParams)
     return self
 end
 
-function Default:MoveTo(waypoints: {BasePart})
-    local humanoid = self.Model:WaitForChild("Humanoid")
-    humanoid.WalkSpeed = self.Speed
+function Default:MoveToWaypoints(waypoints: {BasePart})
+    
+    self.Humanoid.WalkSpeed = self.Speed
 
     local function moveToNext()
         if self.waypointIndex > #waypoints then
             self.finished = true
+            self:DamageBase()
+            self:Destroy()
             return
         end
 
@@ -45,9 +49,9 @@ function Default:MoveTo(waypoints: {BasePart})
             return
         end
 
-        humanoid:MoveTo(part.Position)
+        self.Humanoid:MoveTo(part.Position)
 
-        humanoid.MoveToFinished:Once(function(reached)
+        self.Humanoid.MoveToFinished:Once(function(reached)
             -- even if it fails slightly, we continue
             self.waypointIndex += 1
             moveToNext()
@@ -55,6 +59,12 @@ function Default:MoveTo(waypoints: {BasePart})
     end
 
     moveToNext()
+end
+
+function Default:DamageBase()
+    local damage = self.Model.Humanoid.Health
+
+    Base.Health.Value = math.max(Base.Health.Value - damage, 0)
 end
 
 function Default:Destroy()
