@@ -21,13 +21,13 @@ function Default.new(params: params)
 
     local self = setmetatable({}, Default)
     self.Name = params.Name
-    self.Model = data[1].Model:Clone()
+    self.Model = data.Model:Clone()
     self.Model:PivotTo(params.CFrame)
     self.Model.Parent = workspace.Towers
 
-    self.Range = data[1].RANGE_RADIUS
-    self.AttackCooldown = data[1].ATTACK_COOLDOWN
-    self.Damage = data[1].DAMAGE
+    self.data = data
+    self.Level = 1
+    self:SetStats()
 
     self.Attacking = true
     self.hrp = self.Model.HumanoidRootPart
@@ -69,6 +69,21 @@ function Default:GetEnemies()
     end
 
     return targets
+end
+
+function Default:Upgrade()
+    self.Level += 1
+    self:SetStats()
+end
+
+function Default:SetStats()
+    local data = self.data
+
+    self.Range = data[self.Level].RANGE_RADIUS
+    self.AttackCooldown = data[self.Level].ATTACK_COOLDOWN
+    self.Damage = data[self.Level].DAMAGE
+
+    print("SetStats")
 end
 
 return Default

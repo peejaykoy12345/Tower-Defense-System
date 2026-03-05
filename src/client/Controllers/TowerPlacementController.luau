@@ -25,6 +25,7 @@ local currentTowerModel: Model?
 
 function TowerPlacementController:KnitStart()
     self.TowerPlacementService = Knit.GetService("TowerPlacementService")
+    self.TowerInfoController = Knit.GetController("TowerInfoController")
 end
 
 function TowerPlacementController:PreviewTower(template: Model)
@@ -99,7 +100,15 @@ function TowerPlacementController:ConnectUserInputService()
             local towerName, cf = self:GetTowerNameAndCFrame()
             if not TowerUtils:CanPlaceTower(towerName, cf) then return end
 
-            self.TowerPlacementService:RequestPlaceTower(towerName, cf, {currentTowerModel})
+            local _, tower = self.TowerPlacementService:RequestPlaceTower(towerName, cf, {currentTowerModel}):await()
+            if tower then
+                local ClickDetector = Instance.new("ClickDetector")
+                ClickDetector.Parent = tower.Model
+
+                ClickDetector.MouseClick:Connect(function()
+                    self.TowerInfoController:OpenGui(tower)
+                end)
+            end
         end
     end)
 end

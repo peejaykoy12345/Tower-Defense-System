@@ -8,6 +8,7 @@ realm = "shared"
 Knit = "sleitnick/knit@1.7.0"
 RaycastHelper = "egomoose/raycast-helper@3.0.1"
 GoodSignal = "stravant/goodsignal@0.2.1"
+remotes = "chipioindustries/remotes@2.0.0"
 
 [server-dependencies]
 ProfileStore = "vyon/profilestore@1.0.3"

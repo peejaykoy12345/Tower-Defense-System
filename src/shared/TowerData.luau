@@ -6,11 +6,16 @@ return {
     Fighter = {
         TYPE = "Melee",
         PRICE = 100,
+        Model = TowerModels.Fighter,
         [1] = {
-            DAMAGE = 5,
+            DAMAGE = 20,
             RANGE_RADIUS = 15,
-            ATTACK_COOLDOWN = 1,
-            Model = TowerModels.Fighter
+            ATTACK_COOLDOWN = 0.5,
         },
+        [2] = {
+            DAMAGE = 40,
+            RANGE_RADIUS = 20,
+            ATTACK_COOLDOWN = 0.45,
+        }
     }
 }

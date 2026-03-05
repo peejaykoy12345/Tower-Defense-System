@@ -13,10 +13,17 @@ local TowerPlacementService = Knit.CreateService {
     Client = {}
 }
 
-function TowerPlacementService.Client:RequestPlaceTower(plr: Player, towerName: string, cf: CFrame)
-    if not TowerUtils:CanPlaceTower(towerName, cf) then return end
+function TowerPlacementService:KnitStart()
+    self.TowerInstancesService = Knit.GetService("TowerInstancesService")
+end
 
-    TowerPlacementService:PlaceTower(towerName, cf)
+
+function TowerPlacementService.Client:RequestPlaceTower(plr: Player, towerName: string, cf: CFrame): boolean
+    if not TowerUtils:CanPlaceTower(towerName, cf) then return false end
+
+    local tower = TowerPlacementService:PlaceTower(towerName, cf)
+
+    return tower
 end
 
 function TowerPlacementService:PlaceTower(towerName: string, cf: CFrame)
@@ -26,7 +33,7 @@ function TowerPlacementService:PlaceTower(towerName: string, cf: CFrame)
         return
     end
 
-    local ClassModule = TowerClasses:FindFirstAncestor(towerName)
+    local ClassModule = TowerClasses:FindFirstChild(towerName)
     local Class
     if ClassModule then
         Class = require(ClassModule)
@@ -35,7 +42,10 @@ function TowerPlacementService:PlaceTower(towerName: string, cf: CFrame)
     end
 
     local tower = Class.new({Name = towerName, CFrame = cf,})
+    self.TowerInstancesService:AddTowerInstance(tower)
     tower:StartAttacking()
+
+    return tower
 end
 
 return TowerPlacementService

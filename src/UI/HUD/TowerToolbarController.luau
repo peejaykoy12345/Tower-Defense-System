@@ -67,7 +67,7 @@ function TowerToolbarController:KnitStart()
                 return
             end
 
-            TowerPlacementController:PreviewTower(towerData[1].Model)
+            TowerPlacementController:PreviewTower(towerData.Model)
 
             equippedSlot = slot
         end
