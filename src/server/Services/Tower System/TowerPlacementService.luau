@@ -1,8 +1,12 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerScriptService = game:GetService("ServerScriptService")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 local TowerUtils = require(ReplicatedStorage.Shared.Utilities.TowerUtils)
 local TowerData = require(ReplicatedStorage.Shared.TowerData)
+
+local TowerClasses = ServerScriptService.Server.Classes.Towers
+local DefaultTowerClass = require(TowerClasses.Default)
 
 local TowerPlacementService = Knit.CreateService {
     Name = "TowerPlacementService",
@@ -22,9 +26,16 @@ function TowerPlacementService:PlaceTower(towerName: string, cf: CFrame)
         return
     end
 
-    local towerModel = towerData[1].Model:Clone()
-    towerModel:PivotTo(cf)
-    towerModel.Parent = workspace.Towers
+    local ClassModule = TowerClasses:FindFirstAncestor(towerName)
+    local Class
+    if ClassModule then
+        Class = require(ClassModule)
+    else
+        Class = DefaultTowerClass
+    end
+
+    local tower = Class.new({Name = towerName, CFrame = cf,})
+    tower:StartAttacking()
 end
 
 return TowerPlacementService

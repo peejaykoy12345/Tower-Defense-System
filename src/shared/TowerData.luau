@@ -8,7 +8,7 @@ return {
         PRICE = 100,
         [1] = {
             DAMAGE = 5,
-            RANGE_RADIUS = 10,
+            RANGE_RADIUS = 15,
             ATTACK_COOLDOWN = 1,
             Model = TowerModels.Fighter
         },
