@@ -10,14 +10,13 @@ local DefaultEnemy = require(EnemyClasses.Default)
 
 local WaypointsFolder = workspace.Waypoints
 local start = WaypointsFolder.Start
-local waypoints = WaypointsFolder.EnemyWaypoints:GetChildren()
 
 local EnemyService = Knit.CreateService({
     Name = "EnemyService",
     Client = {}
 })
 
-function EnemyService:SpawnEnemy(enemyName: string)
+function EnemyService:SpawnEnemy(enemyName: string): typeof(DefaultEnemy)?
     local EnemyClassModule = EnemyClasses:FindFirstChild(enemyName)
     local EnemyClass
     if EnemyClassModule then
@@ -39,9 +38,7 @@ function EnemyService:SpawnEnemy(enemyName: string)
     })
 
     enemy.Model:PivotTo(CFrame.new(start.Position))
-    task.spawn(function()
-        enemy:MoveToWaypoints(waypoints)
-    end)
+    return enemy
 end
 
 return EnemyService
