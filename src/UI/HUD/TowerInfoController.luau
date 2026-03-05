@@ -22,18 +22,23 @@ end
 
 function TowerInfoController:KnitStart()
     self.TowerUpgradeService = Knit.GetService("TowerUpgradeService")
+    self.TowerInstancesService = Knit.GetService("TowerInstancesService")
     self.MainFrame.UpgradeButton.Activated:Connect(function()
         if not self.currentTower then return end
 
         local _, success = self.TowerUpgradeService:RequestUpgrade(self.currentTower.Model:GetAttribute("ID")):await()
-        if success then
-            local data = TowerData[self.currentTower.Name]
-            if not data then 
-                warn(`{self.currentTower.Name} is not in tower data`)
-                return
-            end
-            self:UpdateGUI(self.currentTower, data[self.currentTower.Level])
+        if not success then return end
+
+        local data = TowerData[self.currentTower.Name]
+        if not data then 
+            warn(`{self.currentTower.Name} is not in tower data`)
+            return
         end
+        
+        local success, newTower = self.TowerInstancesService:GetTowerInstance(self.currentTower.Model:GetAttribute("ID")):await()
+        if not success or not newTower then return end
+        
+        self:UpdateGUI(newTower, data[newTower.Level])
     end)
 end
 
@@ -53,11 +58,11 @@ function TowerInfoController:OpenGui(tower)
     self:UpdateGUI(tower, levelData)
 end
 
-function TowerInfoController:UpdateGUI(tower, levelData)
+function TowerInfoController:UpdateGUI(tower, data)
     self.MainFrame.TowerNameRow.TowerNameValue.Text = tower.Name
-    self.MainFrame.AttackRangeRow.AttackRangeValue.Text = tostring(levelData.RANGE_RADIUS)
-    self.MainFrame.DamageRow.DamageValue.Text = tostring(levelData.DAMAGE)
-    self.MainFrame.CooldownRow.CooldownValue.Text = tostring(levelData.ATTACK_COOLDOWN)
+    self.MainFrame.AttackRangeRow.AttackRangeValue.Text = tostring(data.RANGE_RADIUS)
+    self.MainFrame.DamageRow.DamageValue.Text = tostring(data.DAMAGE)
+    self.MainFrame.CooldownRow.CooldownValue.Text = tostring(data.ATTACK_COOLDOWN)
 end
 
 function TowerInfoController:Close()

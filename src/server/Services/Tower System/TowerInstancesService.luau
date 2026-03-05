@@ -21,6 +21,12 @@ function TowerInstancesService:RemoveTowerInstance(id: number)
     self.instances[id] = nil
 end
 
+function TowerInstancesService.Client:GetTowerInstance(plr: Player, id: number)
+    local tower = TowerInstancesService:GetTowerInstance(id)
+    print(tower)
+    return tower
+end
+
 function TowerInstancesService:GetTowerInstance(id: number)
     return self.instances[id]
 end

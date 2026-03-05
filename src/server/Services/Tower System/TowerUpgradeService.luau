@@ -24,12 +24,8 @@ function TowerUpgradeService.Client:RequestUpgrade(plr: Player, id)
         return false
     end
 
-    print("Hi test")
-
     if data[tower.Level + 1] then
-        print("Hi")
         TowerUpgradeService:Upgrade(tower)
-
         return true
     end
 

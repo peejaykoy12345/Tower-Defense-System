@@ -25,6 +25,7 @@ local currentTowerModel: Model?
 
 function TowerPlacementController:KnitStart()
     self.TowerPlacementService = Knit.GetService("TowerPlacementService")
+    self.TowerInstancesService = Knit.GetService("TowerInstancesService")
     self.TowerInfoController = Knit.GetController("TowerInfoController")
 end
 
@@ -106,7 +107,10 @@ function TowerPlacementController:ConnectUserInputService()
                 ClickDetector.Parent = tower.Model
 
                 ClickDetector.MouseClick:Connect(function()
-                    self.TowerInfoController:OpenGui(tower)
+                    local success, currentTower = self.TowerInstancesService:GetTowerInstance(tower.Model:GetAttribute("ID")):await()
+                    if success and currentTower then
+                        self.TowerInfoController:OpenGui(currentTower)
+                    end
                 end)
             end
         end
