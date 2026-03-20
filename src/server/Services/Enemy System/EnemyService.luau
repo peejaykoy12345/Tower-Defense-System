@@ -3,6 +3,8 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
+local ModelUtils = require(ReplicatedStorage.Shared.Utilities.ModelUtils)
+
 local EnemiesData = require(ReplicatedStorage.Shared.EnemiesData)
 
 local EnemyClasses = ServerScriptService.Server.Classes.Enemies
@@ -15,6 +17,8 @@ local EnemyService = Knit.CreateService({
     Name = "EnemyService",
     Client = {}
 })
+
+local enemyCount = 0
 
 function EnemyService:SpawnEnemy(enemyName: string): typeof(DefaultEnemy)?
     local EnemyClassModule = EnemyClasses:FindFirstChild(enemyName)
@@ -38,6 +42,12 @@ function EnemyService:SpawnEnemy(enemyName: string): typeof(DefaultEnemy)?
     })
 
     enemy.Model:PivotTo(CFrame.new(start.Position))
+    ModelUtils:SetCharacterCollisionGroup(enemy.Model, "Enemy")
+
+    enemyCount += 1
+    print(`{enemyName} spawned. Total enemies: {enemyCount}`)
+    print(`enemyCount real is {#workspace.Enemies:GetChildren()}`)
+
     return enemy
 end
 

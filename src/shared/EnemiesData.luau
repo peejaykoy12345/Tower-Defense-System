@@ -4,6 +4,6 @@ return {
     ["Enemy"] = {
         Template = ReplicatedStorage.Fighter,
         Health = 100,
-        Speed = 20,
+        Speed = 2,
     }
 }

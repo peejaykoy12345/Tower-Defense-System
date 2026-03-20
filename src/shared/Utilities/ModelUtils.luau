@@ -1,3 +1,4 @@
+local PhysicsService = game:GetService("PhysicsService")
 local ModelUtils = {}
 
 function ModelUtils:SetPartsProperties(parts: {Instance}, propertyName: string, value: number | boolean, ignoreList: {Instance}?)
@@ -19,6 +20,14 @@ end
 
 function ModelUtils:SetPartsColor(parts: {Instance}, color: Color3, ignoreList: {Instance}?)
     self:SetPartsProperties(parts, "Color", color, ignoreList)
+end
+
+function ModelUtils:SetCharacterCollisionGroup(character: Model, groupName: string)
+	for _, obj in ipairs(character:GetDescendants()) do
+		if obj:IsA("BasePart") then
+			obj.CollisionGroup = groupName
+		end
+	end
 end
 
 return ModelUtils
